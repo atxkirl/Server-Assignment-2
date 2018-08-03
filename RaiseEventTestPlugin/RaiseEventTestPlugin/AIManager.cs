@@ -51,7 +51,7 @@ namespace TestPlugin
 						enemy.GetStateMachine().Update();
 					}
 
-					Thread.Sleep(1000);
+					Thread.Sleep(100);
 				}
 			}
 		}

@@ -46,7 +46,11 @@ namespace TestPlugin
 			//Check if state exists within the StateMachine
 			if(stateDict.ContainsKey(stateName))
 			{
+				currentState.Exit();
 				currentState = stateDict[stateName];
+				currentState.Enter();
+
+				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Current State is: " + currentState.GetName() } }, cacheOp: 0);
 			}
 		}
 

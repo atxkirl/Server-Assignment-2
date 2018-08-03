@@ -51,4 +51,19 @@ namespace TestPlugin
 		public float z;
 		public float w;
 	}
+
+	public class NumberHelper : Singleton<NumberHelper>
+	{
+		public double RandomNumberBetweenRange(double minimum, double maximum)
+		{
+			Random random = new Random();
+			return random.NextDouble() * (maximum - minimum) + minimum;
+		}
+
+		public double RandomSecondsBetweenRange(double minimum, double maximum)
+		{
+			Random random = new Random();
+			return (random.NextDouble() * (maximum - minimum) + minimum) * 1000.0;
+		}
+	}
 }

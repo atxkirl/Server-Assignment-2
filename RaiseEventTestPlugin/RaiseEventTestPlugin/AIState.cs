@@ -14,39 +14,36 @@ namespace TestPlugin
 	{
 		protected string name;
 		protected float range;
+		protected float waitTime;
 		protected AI controllingAI = null;
 		protected Player target = null;
-		protected Random random = null;
 		protected Stopwatch timer = null;
 
 		//CONSTRUCTORS
 		public AIState()
 		{
 			name = "DEFAULT";
-			range = 1;
-			target = null;
-			controllingAI = null;
+			range = 1.0f;
+			waitTime = 0.0f;
 			timer = new Stopwatch();
-			random = new Random();
 			timer.Start();
 		}
 		public AIState(string _name)
 		{
 			name = _name;
-			range = 1;
-			target = null;
-			controllingAI = null;
+			range = 1.0f;
+			waitTime = 0.0f;
 			timer = new Stopwatch();
 			timer.Start();
-			random = new Random();
 		}
 		public AIState(string _name, AI _controllingAI)
 		{
 			name = _name;
-			controllingAI = _controllingAI;
+			range = 1.0f;
+			waitTime = 0.0f;
 			timer = new Stopwatch();
 			timer.Start();
-			random = new Random();
+			controllingAI = _controllingAI;
 		}
 
 		//GETTERS
@@ -70,12 +67,23 @@ namespace TestPlugin
 		{
 
 		}
+		public virtual void Enter()
+		{
+			//Set a waitTime for the state to wait before changing state
+			//NOTE: Only do this if the state is supposed to change state overtime
+			waitTime = (float)NumberHelper.Instance.RandomSecondsBetweenRange(0, 1);
+
+			timer = new Stopwatch();
+			timer.Start();
+		}
+		public virtual void Exit()
+		{
+
+		}
 	}
 
 	public class IdleState : AIState
 	{
-		float idleTime;
-
 		//CONSTRUCTORS
 		public IdleState(string stateName) : base()
 		{
@@ -87,7 +95,16 @@ namespace TestPlugin
 			base.controllingAI = _controllingAI;
 		}
 
+
 		//FUNCTIONS
+		public override void Enter()
+		{
+			base.Enter();
+
+			//Set the Idle waitTime to be between 0 and 5 seconds.
+			waitTime = (float)NumberHelper.Instance.RandomSecondsBetweenRange(0, 5);
+		}
+
 		public override void Update()
 		{
 			float shortestDist = float.MaxValue;
@@ -106,34 +123,22 @@ namespace TestPlugin
 				}
 			}
 
-			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Update. Pt 1" } }, cacheOp: 0);
-
 			//Check if there is a player within chase range
 			if (shortestDist < range && closestPlayer != null)
 			{
 				target = closestPlayer;
 				controllingAI.GetStateMachine().SetCurrState("Chase");
-
-				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Changing State to Chase." } }, cacheOp: 0);
 			}
 			else
 			{
-				//Idle the AI for a random amount of time
-				//between 0f - 2f
-				idleTime = (float)(random.NextDouble() * 2.0);
+				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, name + " WaitTime=" + waitTime + " ElapsedTime=" + timer.ElapsedMilliseconds } }, cacheOp: 0);
 
-				if (timer.ElapsedMilliseconds > idleTime)
+				if (timer.ElapsedMilliseconds > waitTime)
 				{
 					//Transition to Roam state
 					controllingAI.GetStateMachine().SetCurrState("Roam");
-
-					RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Changing State to Roam." } }, cacheOp: 0);
 				}
-
-				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Else." } }, cacheOp: 0);
 			}
-
-			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Update. Pt 2" } }, cacheOp: 0);
 		}
 	}
 
@@ -151,6 +156,14 @@ namespace TestPlugin
 		}
 
 		//FUNCTIONS
+		public override void Enter()
+		{
+			base.Enter();
+
+			//Set the Roam waitTime to be between 5 and 10 seconds.
+			waitTime = (float)NumberHelper.Instance.RandomSecondsBetweenRange(5, 10);
+		}
+
 		public override void Update()
 		{
 			float shortestDist = float.MaxValue;
@@ -166,20 +179,20 @@ namespace TestPlugin
 			}
 
 			//Check if there is a player within chase range
-			if (shortestDist < range)
+			if (shortestDist < range && closestPlayer != null)
 			{
-				if (closestPlayer != null)
-				{
-					target = closestPlayer;
-					controllingAI.GetStateMachine().SetCurrState("Chase");
-				}
+				target = closestPlayer;
+				controllingAI.GetStateMachine().SetCurrState("Chase");
 			}
 			else
 			{
-				//Move the AI for a random amount of time
+				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, name + " WaitTime=" + waitTime + " ElapsedTime=" + timer.ElapsedMilliseconds} }, cacheOp: 0);
 
-				//Transition to Idle state
-				controllingAI.GetStateMachine().SetCurrState("Idle");
+				if (timer.ElapsedMilliseconds > waitTime)
+				{
+					//Transition to Roam state
+					controllingAI.GetStateMachine().SetCurrState("Idle");
+				}
 			}
 		}
 	}
