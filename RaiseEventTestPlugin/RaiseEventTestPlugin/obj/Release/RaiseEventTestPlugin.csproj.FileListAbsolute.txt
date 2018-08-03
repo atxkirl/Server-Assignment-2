@@ -1,0 +1,44 @@
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\RaiseEventTestPlugin.dll
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\RaiseEventTestPlugin.pdb
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\ExitGamesLibs.dll
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\MySql.Data.dll
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\Photon.SocketServer.dll
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\PhotonHivePlugin.dll
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\Google.Protobuf.dll
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\MySql.Data.xml
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.dll
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.pdb
+E:\Work_Files\Outgoing Sync\Year 03\Server Development for Social Games\Lab\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.csprojResolveAssemblyReference.cache
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\RaiseEventTestPlugin.dll
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\RaiseEventTestPlugin.pdb
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\ExitGamesLibs.dll
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\Photon.SocketServer.dll
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\PhotonHivePlugin.dll
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\Google.Protobuf.dll
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\MySql.Data.xml
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.csprojResolveAssemblyReference.cache
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.dll
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.pdb
+C:\Users\chrish\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\MySql.Data.dll
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\RaiseEventTestPlugin.dll
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\RaiseEventTestPlugin.pdb
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\ExitGamesLibs.dll
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\MySql.Data.dll
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\Photon.SocketServer.dll
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\PhotonHivePlugin.dll
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\Google.Protobuf.dll
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\MySql.Data.xml
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.csprojResolveAssemblyReference.cache
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.dll
+C:\Users\adria\Desktop\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.pdb
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\RaiseEventTestPlugin.dll
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\RaiseEventTestPlugin.pdb
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\ExitGamesLibs.dll
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\MySql.Data.dll
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\Photon.SocketServer.dll
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\PhotonHivePlugin.dll
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\Google.Protobuf.dll
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\bin\Release\MySql.Data.xml
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.csprojResolveAssemblyReference.cache
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.dll
+C:\Users\adria\Desktop\TEMP WORK\RaiseEventTestPlugin\RaiseEventTestPlugin\obj\Release\RaiseEventTestPlugin.pdb
