@@ -14,10 +14,10 @@ namespace TestPlugin
 	{
 		protected string name;
 		protected float range;
-		protected AI controllingAI;
-		protected Player target;
-		protected Random random;
-		protected Stopwatch timer;
+		protected AI controllingAI = null;
+		protected Player target = null;
+		protected Random random = null;
+		protected Stopwatch timer = null;
 
 		//CONSTRUCTORS
 		public AIState()
@@ -27,6 +27,7 @@ namespace TestPlugin
 			target = null;
 			controllingAI = null;
 			timer = new Stopwatch();
+			random = new Random();
 			timer.Start();
 		}
 		public AIState(string _name)
@@ -37,6 +38,7 @@ namespace TestPlugin
 			controllingAI = null;
 			timer = new Stopwatch();
 			timer.Start();
+			random = new Random();
 		}
 		public AIState(string _name, AI _controllingAI)
 		{
@@ -44,6 +46,7 @@ namespace TestPlugin
 			controllingAI = _controllingAI;
 			timer = new Stopwatch();
 			timer.Start();
+			random = new Random();
 		}
 
 		//GETTERS
@@ -103,32 +106,34 @@ namespace TestPlugin
 				}
 			}
 
-			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Update." } }, cacheOp: 0);
+			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Update. Pt 1" } }, cacheOp: 0);
 
 			//Check if there is a player within chase range
-			//if (shortestDist < range && closestPlayer != null)
-			//{
-			//	target = closestPlayer;
-			//	controllingAI.GetStateMachine().SetCurrState("Chase");
+			if (shortestDist < range && closestPlayer != null)
+			{
+				target = closestPlayer;
+				controllingAI.GetStateMachine().SetCurrState("Chase");
 
-			//	RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Changing State to Chase." } }, cacheOp: 0);
-			//}
-			//else
-			//{
-			//	//Idle the AI for a random amount of time
-			//	//between 0f - 2f
-			//	idleTime = (float)(random.NextDouble() * 2.0);
+				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Changing State to Chase." } }, cacheOp: 0);
+			}
+			else
+			{
+				//Idle the AI for a random amount of time
+				//between 0f - 2f
+				idleTime = (float)(random.NextDouble() * 2.0);
 
-			//	if (timer.ElapsedMilliseconds > idleTime)
-			//	{
-			//		//Transition to Roam state
-			//		controllingAI.GetStateMachine().SetCurrState("Roam");
+				if (timer.ElapsedMilliseconds > idleTime)
+				{
+					//Transition to Roam state
+					controllingAI.GetStateMachine().SetCurrState("Roam");
 
-			//		RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Changing State to Roam." } }, cacheOp: 0);
-			//	}
+					RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Changing State to Roam." } }, cacheOp: 0);
+				}
 
-			//	RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Else." } }, cacheOp: 0);
-			//}
+				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Else." } }, cacheOp: 0);
+			}
+
+			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Update. Pt 2" } }, cacheOp: 0);
 		}
 	}
 

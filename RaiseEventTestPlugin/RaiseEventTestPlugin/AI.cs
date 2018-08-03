@@ -11,7 +11,7 @@ namespace TestPlugin
 	/// </summary>
 	public class AI : CustomObject
 	{
-		StateMachine fsm;
+		StateMachine fsm = null;
 
 		//CONSTRUCTORS
 		public AI() : base()
@@ -30,8 +30,15 @@ namespace TestPlugin
 		//OTHER
 		public void AddState(AIState _state)
 		{
-			_state.SetControllingAI(this);
-			fsm.AddState(_state);
+			if(fsm == null)
+			{
+				fsm = new StateMachine();
+			}
+			if(fsm != null)
+			{
+				_state.SetControllingAI(this);
+				fsm.AddState(_state);
+			}
 		}
 	}
 }
