@@ -87,7 +87,7 @@ namespace TestPlugin
 		//FUNCTIONS
 		public override void Update()
 		{
-			float shortestDist = float.MinValue;
+			float shortestDist = float.MaxValue;
 			Player closestPlayer = null;
 			
 			if(RaiseEventTestPlugin.Instance.GetConnectedPlayers().Count > 0)
@@ -103,24 +103,32 @@ namespace TestPlugin
 				}
 			}
 
-			//Check if there is a player within chase range
-			if (shortestDist < range && closestPlayer != null)
-			{
-				target = closestPlayer;
-				controllingAI.GetStateMachine().SetCurrState("Chase");
-			}
-			else
-			{
-				//Idle the AI for a random amount of time
-				//between 0f - 2f
-				idleTime = (float)(random.NextDouble() * 2.0);
+			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Update." } }, cacheOp: 0);
 
-				if (timer.ElapsedMilliseconds > idleTime)
-				{
-					//Transition to Roam state
-					controllingAI.GetStateMachine().SetCurrState("Roam");
-				}
-			}
+			//Check if there is a player within chase range
+			//if (shortestDist < range && closestPlayer != null)
+			//{
+			//	target = closestPlayer;
+			//	controllingAI.GetStateMachine().SetCurrState("Chase");
+
+			//	RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Changing State to Chase." } }, cacheOp: 0);
+			//}
+			//else
+			//{
+			//	//Idle the AI for a random amount of time
+			//	//between 0f - 2f
+			//	idleTime = (float)(random.NextDouble() * 2.0);
+
+			//	if (timer.ElapsedMilliseconds > idleTime)
+			//	{
+			//		//Transition to Roam state
+			//		controllingAI.GetStateMachine().SetCurrState("Roam");
+
+			//		RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Changing State to Roam." } }, cacheOp: 0);
+			//	}
+
+			//	RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "State Else." } }, cacheOp: 0);
+			//}
 		}
 	}
 
@@ -140,7 +148,7 @@ namespace TestPlugin
 		//FUNCTIONS
 		public override void Update()
 		{
-			float shortestDist = float.MinValue;
+			float shortestDist = float.MaxValue;
 			Player closestPlayer = null;
 			foreach (Player player in RaiseEventTestPlugin.Instance.GetConnectedPlayers())
 			{
