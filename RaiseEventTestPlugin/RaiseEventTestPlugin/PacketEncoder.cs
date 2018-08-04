@@ -18,7 +18,7 @@ namespace TestPlugin
 
 		//Byte-array-based Encoding
 		/// <summary>
-		/// Encoding for CustomObject - Encoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ
+		/// Encoding for CustomObject - Encoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ, ObjectRotX, ObjectRotY, ObjectRotZ, ObjectRotW
 		/// </summary>
 		public byte[] EncodeCustomObject(object obj)
 		{
@@ -42,6 +42,10 @@ namespace TestPlugin
 					bw.Write(customObject.GetPosX());
 					bw.Write(customObject.GetPosY());
 					bw.Write(customObject.GetPosZ());
+					bw.Write(customObject.GetRotX());
+					bw.Write(customObject.GetRotY());
+					bw.Write(customObject.GetRotZ());
+					bw.Write(customObject.GetRotW());
 
 					returnObject = ms.ToArray();
 				}
@@ -51,7 +55,7 @@ namespace TestPlugin
 		}
 
 		/// <summary>
-		/// Encoding for Player - Encoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ
+		/// Encoding for Player - Encoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ, ObjectRotX, ObjectRotY, ObjectRotZ, ObjectRotW
 		/// </summary>
 		public byte[] EncodePlayer(object obj)
 		{
@@ -84,7 +88,7 @@ namespace TestPlugin
 		}
 
 		/// <summary>
-		/// Encoding for AI - Encoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ, StateName, StateRange, StateTargetPosX, StateTargetPosY, StateTargetPosZ
+		/// Encoding for AI - Encoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ, ObjectRotX, ObjectRotY, ObjectRotZ, ObjectRotW, StateName, StateRange, StateTargetPosX, StateTargetPosY, StateTargetPosZ
 		/// </summary>
 		public byte[] EncodeAI(object obj)
 		{

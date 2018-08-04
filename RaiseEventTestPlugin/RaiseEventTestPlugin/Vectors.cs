@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TestPlugin
@@ -56,14 +57,23 @@ namespace TestPlugin
 	{
 		public double RandomNumberBetweenRange(double minimum, double maximum)
 		{
+			Thread.Sleep(10);
 			Random random = new Random();
 			return random.NextDouble() * (maximum - minimum) + minimum;
 		}
 
 		public double RandomSecondsBetweenRange(double minimum, double maximum)
 		{
+			Thread.Sleep(10);
 			Random random = new Random();
 			return (random.NextDouble() * (maximum - minimum) + minimum) * 1000.0;
+		}
+
+		public bool RandomBool()
+		{
+			Thread.Sleep(10);
+			Random random = new Random();
+			return (random.NextDouble() <= 0.5);
 		}
 	}
 }

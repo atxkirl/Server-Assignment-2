@@ -11,11 +11,12 @@ namespace TestPlugin
 	{
 		Dictionary<string, AIState> stateDict;
 		AIState currentState;
-		private Object FSMLock = new Object();
+		public AI controllingAI;
 
 		public StateMachine()
 		{
 			currentState = null;
+			controllingAI = null;
 			stateDict = new Dictionary<string, AIState>();
 		}
 
@@ -49,8 +50,6 @@ namespace TestPlugin
 				currentState.Exit();
 				currentState = stateDict[stateName];
 				currentState.Enter();
-
-				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "Current State is: " + currentState.GetName() } }, cacheOp: 0);
 			}
 		}
 

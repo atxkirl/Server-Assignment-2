@@ -59,7 +59,7 @@ namespace TestPlugin
 		public void SetName(string _name) { name = _name; }
 		public void SetRange(float _range) { range = _range; }
 		public void SetTarget(Player _target) { target = _target; }
-		public void SetTarget(Vector3 _target) { target = new Player(_target); }
+		public void SetTarget(Vector3 _targetPos, Quaternion _targetRot) { target = new Player(_targetPos, _targetRot); }
 		public void SetControllingAI(AI _controllingAI) { controllingAI = _controllingAI; }
 
 		//FUNCTIONS
@@ -75,10 +75,24 @@ namespace TestPlugin
 
 			timer = new Stopwatch();
 			timer.Start();
+
+			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, GetControllingAI().GetObjectName() + " State " + this.GetName() + " Enter WaitTime=" + waitTime } }, cacheOp: 0);
 		}
 		public virtual void Exit()
 		{
+		}
+		public AIState ShallowCopy()
+		{
+			return (AIState)this.MemberwiseClone();
+		}
+		public AIState DeepCopy()
+		{
+			AIState copy = (AIState)this.MemberwiseClone();
+			copy.timer = new Stopwatch();
+			copy.controllingAI = new AI();
+			copy.target = new Player();
 
+			return copy;
 		}
 	}
 
@@ -95,22 +109,21 @@ namespace TestPlugin
 			base.controllingAI = _controllingAI;
 		}
 
-
 		//FUNCTIONS
 		public override void Enter()
 		{
 			base.Enter();
 
-			//Set the Idle waitTime to be between 0 and 5 seconds.
-			waitTime = (float)NumberHelper.Instance.RandomSecondsBetweenRange(0, 5);
+			//Set the Idle waitTime to be between 2 and 5 seconds.
+			waitTime = (float)NumberHelper.Instance.RandomSecondsBetweenRange(2, 5);
 		}
 
 		public override void Update()
 		{
 			float shortestDist = float.MaxValue;
 			Player closestPlayer = null;
-			
-			if(RaiseEventTestPlugin.Instance.GetConnectedPlayers().Count > 0)
+
+			if (RaiseEventTestPlugin.Instance.GetConnectedPlayers().Count > 0)
 			{
 				foreach (Player player in RaiseEventTestPlugin.Instance.GetConnectedPlayers())
 				{
@@ -131,8 +144,6 @@ namespace TestPlugin
 			}
 			else
 			{
-				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, name + " WaitTime=" + waitTime + " ElapsedTime=" + timer.ElapsedMilliseconds } }, cacheOp: 0);
-
 				if (timer.ElapsedMilliseconds > waitTime)
 				{
 					//Transition to Roam state
@@ -144,14 +155,18 @@ namespace TestPlugin
 
 	public class RoamState : AIState
 	{
+		Vector3 roamTarget = null;
+
 		//CONSTRUCTORS
 		public RoamState(string stateName)
 		{
 			base.SetName(stateName);
+			base.SetRange(30);
 		}
 		public RoamState(string stateName, AI _controllingAI)
 		{
 			base.name = stateName;
+			base.SetRange(30);
 			base.controllingAI = _controllingAI;
 		}
 
@@ -162,19 +177,38 @@ namespace TestPlugin
 
 			//Set the Roam waitTime to be between 5 and 10 seconds.
 			waitTime = (float)NumberHelper.Instance.RandomSecondsBetweenRange(5, 10);
+			//Set a position for the AI to roam towards
+			roamTarget = new Vector3();
+			roamTarget.y = controllingAI.GetPosY();
+			roamTarget.x = controllingAI.GetPosX() + (float)NumberHelper.Instance.RandomNumberBetweenRange(0, 1);
+			if (NumberHelper.Instance.RandomBool())
+				roamTarget.x = -roamTarget.x;
+			roamTarget.z = controllingAI.GetPosZ() + (float)NumberHelper.Instance.RandomNumberBetweenRange(0, 1);
+			if (NumberHelper.Instance.RandomBool())
+				roamTarget.z = -roamTarget.z;
+
+
+
+			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, "Target position: " + roamTarget.x + "," + roamTarget.y + "," + roamTarget.z } }, cacheOp: 0);
 		}
 
 		public override void Update()
 		{
 			float shortestDist = float.MaxValue;
 			Player closestPlayer = null;
-			foreach (Player player in RaiseEventTestPlugin.Instance.GetConnectedPlayers())
+			
+			if(RaiseEventTestPlugin.Instance.GetConnectedPlayers().Count > 0)
 			{
-				float dist = (controllingAI.GetPos() - player.GetPos()).Length();
-				if (dist < shortestDist)
+				foreach (Player player in RaiseEventTestPlugin.Instance.GetConnectedPlayers())
 				{
-					shortestDist = dist;
-					closestPlayer = player;
+					float dist = (controllingAI.GetPos() - player.GetPos()).Length();
+					if (dist < shortestDist)
+					{
+						shortestDist = dist;
+						closestPlayer = player;
+
+						RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, "Closest Player: " + closestPlayer.GetObjectName() + " Distance: " + dist } }, cacheOp: 0);
+					}
 				}
 			}
 
@@ -186,12 +220,22 @@ namespace TestPlugin
 			}
 			else
 			{
-				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, name + " WaitTime=" + waitTime + " ElapsedTime=" + timer.ElapsedMilliseconds} }, cacheOp: 0);
-
 				if (timer.ElapsedMilliseconds > waitTime)
 				{
 					//Transition to Roam state
 					controllingAI.GetStateMachine().SetCurrState("Idle");
+				}
+				else
+				{
+					if(controllingAI.GetPos() != roamTarget)
+					{
+						Vector3 move = new Vector3();
+						move.x = controllingAI.GetPosX() + (roamTarget.x * 0.001f);
+						move.z = controllingAI.GetPosZ() + (roamTarget.z * 0.001f);
+						move.y = controllingAI.GetPosY();
+
+						controllingAI.SetPos(move);
+					}
 				}
 			}
 		}
@@ -227,6 +271,36 @@ namespace TestPlugin
 				controllingAI.GetStateMachine().SetCurrState("Idle");
 			else if ((controllingAI.GetPos() - target.GetPos()).Length() < attackingRange)
 				controllingAI.GetStateMachine().SetCurrState("Attack");
+		}
+	}
+
+	public class AttackState : AIState
+	{
+		int attackDamage;
+
+		//CONSTRUCTORS
+		public AttackState(string stateName)
+		{
+			base.SetName(stateName);
+		}
+		public AttackState(string stateName, AI _controllingAI)
+		{
+			base.name = stateName;
+			base.controllingAI = _controllingAI;
+		}
+
+		//GETTERS
+		public int GetAttackDamage() { return attackDamage; }
+
+		//SETTERS
+		public void SetAttackDamage(int _attackDamage) { attackDamage = _attackDamage; }
+
+		//FUNCTIONS
+		public override void Update()
+		{
+			if (target != null)
+				target.SetHealth(target.GetHealth() - attackDamage);
+			controllingAI.GetStateMachine().SetCurrState("Attack");
 		}
 	}
 }

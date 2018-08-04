@@ -73,7 +73,7 @@ namespace TestPlugin
 		//Byte-Array-based Decoding
 		//Byte-Array-based Decoding
 		/// <summary>
-		/// Decoding for CustomObject - Decoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ
+		/// Decoding for CustomObject - Decoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ, ObjectRotX, ObjectRotY, ObjectRotZ, ObjectRotW
 		/// </summary>
 		public object DecodeCustomObject(byte[] bytes)
 		{
@@ -87,6 +87,7 @@ namespace TestPlugin
 					customObject.SetObjectName(br.ReadString());
 					customObject.SetHealth(br.ReadInt32());
 					customObject.SetPos(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
+					customObject.SetRot(br.ReadSingle(), br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
 
 					return customObject;
 				}
@@ -94,7 +95,7 @@ namespace TestPlugin
 		}
 
 		/// <summary>
-		/// Decoding for Player - Decoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ
+		/// Decoding for Player - Decoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ, ObjectRotX, ObjectRotY, ObjectRotZ, ObjectRotW
 		/// </summary>
 		public object DecodePlayer(byte[] bytes)
 		{
@@ -109,6 +110,7 @@ namespace TestPlugin
 					customObject.SetObjectName(br.ReadString());
 					customObject.SetHealth(br.ReadInt32());
 					customObject.SetPos(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
+					customObject.SetRot(br.ReadSingle(), br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
 
 					//Player Data
 
@@ -118,7 +120,7 @@ namespace TestPlugin
 		}
 
 		/// <summary>
-		/// Decoding for AI - Decoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ, StateName, StateRange, StateTargetPosX, StateTargetPosY, StateTargetPosZ
+		/// Decoding for AI - Decoding format: TargetReceiverName, ObjectName, ObjectHealth, ObjectPosX, ObjectPosY, ObjectPosZ, ObjectRotX, ObjectRotY, ObjectRotZ, ObjectRotW, StateName, StateRange, StateTargetPosX, StateTargetPosY, StateTargetPosZ
 		/// </summary>
 		public object DecodeAI(byte[] bytes)
 		{
@@ -134,11 +136,12 @@ namespace TestPlugin
 					customObject.SetObjectName(br.ReadString());
 					customObject.SetHealth(br.ReadInt32());
 					customObject.SetPos(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
+					customObject.SetRot(br.ReadSingle(), br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
 
 					//AIState Data
 					currentState.SetName(br.ReadString());
 					currentState.SetRange(br.ReadSingle());
-					currentState.SetTarget(new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()));
+					currentState.SetTarget(new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()), new Quaternion());
 
 					//AI Data
 					customObject.GetStateMachine().SetCurrState(currentState.GetName());
@@ -161,7 +164,7 @@ namespace TestPlugin
 				{
 					customObject.SetName(br.ReadString());
 					customObject.SetRange(br.ReadSingle());
-					customObject.SetTarget(new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()));
+					customObject.SetTarget(new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()), new Quaternion());
 
 					return customObject;
 				}

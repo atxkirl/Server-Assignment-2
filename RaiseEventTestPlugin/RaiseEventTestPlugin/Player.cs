@@ -16,10 +16,10 @@ namespace TestPlugin
 		{
 
 		}
-		public Player(Vector3 _pos) : base(_pos)
+		public Player(Vector3 _pos, Quaternion _rot) : base(_pos, _rot)
 		{
 		}
-		public Player(string _targetReceiverName, string _name, int _health, Vector3 _pos) : base(_targetReceiverName, _name, _health, _pos)
+		public Player(string _targetReceiverName, string _name, int _health, Vector3 _pos, Quaternion _rot) : base(_targetReceiverName, _name, _health, _pos, _rot)
 		{
 		}
 	}

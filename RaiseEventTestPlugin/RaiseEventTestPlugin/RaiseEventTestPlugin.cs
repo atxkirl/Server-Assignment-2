@@ -13,24 +13,34 @@ namespace TestPlugin
 {
 	public enum EVENT_CODES
 	{
-		EV_TESTING = 1,
-		EV_PING,
+		//Testing Events
+		TEST_PING = 1,
+		TEST_OBJECTPACKET,
+		TEST_STRINGPACKET,
 
+		//AI Events
 		EV_INITAI,
+		EV_SPAWNAI,
+		EV_UPDATEAIPOS,
 
+		//Player Events
+		EV_UPDATEPLAYERPOS,
+
+		//User Events
 		EV_USERJOINING,
 		EV_USERLEAVING,
 		EV_LISTALLUSERS,
 
-		EV_UPDATEPLAYERPOS,
-
+		//SQLDatabase Events
 		EV_SEARCHDB,
 		EV_INSERTDB,
 		EV_UPDATEDB,
 
+		//Login Events
 		EV_LOGIN_PASS,
 		EV_LOGIN_FAIL,
 
+		//Friend Events
 		EV_ADD_FRIEND,
 		EV_REMOVE_FRIEND,
 		EV_ACCEPT_FRIEND,
@@ -38,10 +48,11 @@ namespace TestPlugin
 		EV_LIST_FRIEND,
 		EV_LIST_FRIEND_DATA,
 
-		CT_CUSTOMOBJECT,
-		CT_PLAYER,
-		CT_AI,
-		CT_AISTATE,
+		//CustomObject Events
+		CO_CUSTOMOBJECT,
+		CO_PLAYER,
+		CO_AI,
+		CO_AISTATE
 	}
 
 	public class RaiseEventTestPlugin : PluginBase
@@ -85,32 +96,29 @@ namespace TestPlugin
 				Instance = this;
 
 			//Register CustomObject
-			host.TryRegisterType(typeof(CustomObject), (byte)EVENT_CODES.CT_CUSTOMOBJECT,
+			host.TryRegisterType(typeof(CustomObject), (byte)EVENT_CODES.CO_CUSTOMOBJECT,
 			PacketEncoder.Instance.EncodeCustomObject,
 			PacketDecoder.Instance.DecodeCustomObject);
 
 			//Register Player
-			host.TryRegisterType(typeof(Player), (byte)EVENT_CODES.CT_PLAYER,
+			host.TryRegisterType(typeof(Player), (byte)EVENT_CODES.CO_PLAYER,
 			PacketEncoder.Instance.EncodePlayer,
 			PacketDecoder.Instance.DecodePlayer);
 
 			//Register AI
-			host.TryRegisterType(typeof(AI), (byte)EVENT_CODES.CT_AI,
+			host.TryRegisterType(typeof(AI), (byte)EVENT_CODES.CO_AI,
 			PacketEncoder.Instance.EncodeAI,
 			PacketDecoder.Instance.DecodeAI);
 
 			//Register AIState
-			host.TryRegisterType(typeof(AIState), (byte)EVENT_CODES.CT_AISTATE,
+			host.TryRegisterType(typeof(AIState), (byte)EVENT_CODES.CO_AISTATE,
 			PacketEncoder.Instance.EncodeAIState,
 			PacketDecoder.Instance.DecodeAIState);
-
-			//Initialize stuff
-			Init();
 
 			return base.SetupInstance(host, config, out errorMsg);
 		}
 
-		private void Init()
+		public void Init()
 		{
 			ConnectedPlayers = new List<Player>();
 
@@ -145,42 +153,52 @@ namespace TestPlugin
 			///ASSIGNMENT 2 STUFF
 			///ASSIGNMENT 2 STUFF
 			///ASSIGNMENT 2 STUFF
-
-			//CustomObject thingy = new CustomObject("temp", "customobject", 10, new Vector3(1, 2.3f, 90.12f));
-			//this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_TESTING, data: new Dictionary<byte, object>() { { (byte)245, thingy } }, cacheOp: 0);
-
-			//Player player = new Player("player", 10, new Vector3(1, 2.3f, 90.12f));
-			//this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.CT_PLAYER, data: new Dictionary<byte, object>() { { (byte)245, player } }, cacheOp: 0);
-
-			//AI enemy = new AI();
-			//enemy.SetName("enemy");
-			//enemy.SetHealth(10);
-			//enemy.SetPos(new Vector3(1, 2, 3));
-
-			//IdleState Idle = new IdleState("Idle", enemy);
-			//ChaseState Chase = new ChaseState("Chase", enemy);
-			//enemy.AddState(Idle);
-			//enemy.AddState(Chase);
-			//this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.CT_AI, data: new Dictionary<byte, object>() { { (byte)245, enemy } }, cacheOp: 0);
-
 			//TEST PACKET
-			if (info.Request.EvCode == (byte)EVENT_CODES.EV_PING)
-				SendListOfPlayers();
-
-			//INIT AI
-			else if(info.Request.EvCode == (byte)EVENT_CODES.EV_INITAI)
+			if (info.Request.EvCode == (byte)EVENT_CODES.TEST_PING)
 			{
+				SendListOfPlayers();
+			}
+
+			//Client asking for all AIs
+			else if (info.Request.EvCode == (byte)EVENT_CODES.EV_INITAI)
+			{
+				//Make sure AIManager thread is fully initialized and running
+				do
+				{
+					Thread.Sleep(100);
+				}
+				while (AIManager.Instance == null);
+
 				foreach (AI enemy in AIManager.Instance.GetAIList())
 				{
-					this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LOGIN_PASS, data: new Dictionary<byte, object>() { { (byte)245, "AIManager AI: " + enemy.GetObjectName() + " CurrState: " + enemy.GetStateMachine().GetCurrState().GetName() } }, cacheOp: 0);
+					this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_SPAWNAI, data: new Dictionary<byte, object>() { { (byte)245, enemy } }, cacheOp: 0);
 				}
 			}
 
+			//Client updating position within server
+			else if (info.Request.EvCode == (byte)EVENT_CODES.EV_UPDATEPLAYERPOS)
+			{
+				Player player = (Player)PacketDecoder.Instance.DecodePlayer((byte[])info.Request.Data);
+				this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, "Received UpdatePlayerPos from: " + player.GetObjectName() } }, cacheOp: 0);
+				foreach (Player connectedPlayer in ConnectedPlayers)
+				{
+					if(connectedPlayer.GetObjectName() == player.GetObjectName())
+					{
+						connectedPlayer.SetPos(player.GetPos());
+						return;
+					}
+				}
+			}
+
+			//Client asking for List of all connected clients
+			else if (info.Request.EvCode == (byte)EVENT_CODES.EV_LISTALLUSERS)
+				SendListOfPlayers();
+
 			//User joining server
-			else if(info.Request.EvCode == (byte)EVENT_CODES.EV_USERJOINING)
+			else if (info.Request.EvCode == (byte)EVENT_CODES.EV_USERJOINING)
 				UserJoined(info);
 			//User leaving server
-			else if(info.Request.EvCode == (byte)EVENT_CODES.EV_USERLEAVING)
+			else if (info.Request.EvCode == (byte)EVENT_CODES.EV_USERLEAVING)
 				UserLeft(info);
 
 			///ASSIGNMENT 1 STUFF
