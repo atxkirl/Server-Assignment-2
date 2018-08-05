@@ -25,6 +25,7 @@ namespace TestPlugin
 
 		//Player Events
 		EV_UPDATEPLAYERPOS,
+		EV_UPDATEPLAYERHEALTH,
 
 		//User Events
 		EV_USERJOINING,

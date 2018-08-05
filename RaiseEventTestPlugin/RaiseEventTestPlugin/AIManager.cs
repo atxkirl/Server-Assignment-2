@@ -65,15 +65,13 @@ namespace TestPlugin
 				IdleState Idle = new IdleState("Idle");
 				RoamState Roam = new RoamState("Roam");
 				ChaseState Chase = new ChaseState("Chase");
+				AttackState Attack = new AttackState("Attack");
 
-				List<AIState> states = new List<AIState>();
-				states.Add(Idle);
-				states.Add(Roam);
-				states.Add(Chase);
+				List<AIState> basicStates = new AIState[] { Idle, Roam, Chase, Attack }.ToList();
 
 				//Adds the AI to the Manager, and tells the server to send SpawnAI packets to all Clients
-				SpawnAI("beetle", 10, new Vector3(40, 1.1f, 44), states);
-				SpawnAI("beetle", 10, new Vector3(44, 1.1f, 44), states);
+				SpawnAI("beetle", 10, new Vector3(44, 1.1f, 44), basicStates);
+				SpawnAI("ogre", 10, new Vector3(46, 1.1f, 44), basicStates);
 
 				//Update loop
 				while (true)

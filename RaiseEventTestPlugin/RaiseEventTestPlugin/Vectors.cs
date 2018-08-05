@@ -32,8 +32,14 @@ namespace TestPlugin
 			return (float)Math.Sqrt(x * x + y * y + z * z);
 		}
 
-		//Operator Overloads
+		public void Normalize()
+		{
+			this.x = this.x / this.Length();
+			this.y = this.y / this.Length();
+			this.z = this.z / this.Length();
+		}
 
+		//Operator Overloads
 		static public Vector3 operator-(Vector3 pointA, Vector3 pointB)
 		{
 			return new Vector3(pointA.x - pointB.x, pointA.y - pointB.y, pointA.z - pointB.z);

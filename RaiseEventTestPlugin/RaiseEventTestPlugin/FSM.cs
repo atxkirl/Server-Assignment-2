@@ -10,7 +10,7 @@ namespace TestPlugin
 	public class StateMachine
 	{
 		Dictionary<string, AIState> stateDict;
-		AIState currentState;
+		AIState currentState, previousState;
 		public AI controllingAI;
 
 		public StateMachine()
@@ -24,6 +24,13 @@ namespace TestPlugin
 		{
 			if(currentState != null)
 				return currentState;
+			return null;
+		}
+
+		public AIState GetPrevState()
+		{
+			if (previousState != null)
+				return previousState;
 			return null;
 		}
 
@@ -42,15 +49,20 @@ namespace TestPlugin
 			stateDict.Add(newState.GetName(), newState);
 		}
 
-		public void SetCurrState(string stateName)
+		public bool SetCurrState(string stateName)
 		{
 			//Check if state exists within the StateMachine
 			if(stateDict.ContainsKey(stateName))
 			{
+				previousState = currentState;
+
 				currentState.Exit();
 				currentState = stateDict[stateName];
 				currentState.Enter();
+
+				return true;
 			}
+			return false;
 		}
 
 		public void Update()
