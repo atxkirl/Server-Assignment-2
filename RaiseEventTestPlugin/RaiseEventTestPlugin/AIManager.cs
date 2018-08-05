@@ -58,8 +58,6 @@ namespace TestPlugin
 				}
 				while (NumberHelper.Instance == null);
 
-				RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, "Starting AIManger Thread." } }, cacheOp: 0);
-
 				//Initalize List
 				Instance.listOfAI = new List<AI>();
 
@@ -80,15 +78,11 @@ namespace TestPlugin
 				//Update loop
 				while (true)
 				{
-					foreach(Player player in RaiseEventTestPlugin.Instance.GetConnectedPlayers())
-					{
-						RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, "Player Pos: " + player.GetPosX() + "," + player.GetPosY() + "," + player.GetPosZ() } }, cacheOp: 0);
-					}
-
 					//Iterate through all the AI and update them
 					foreach (AI enemy in Instance.listOfAI)
 					{
 						enemy.GetStateMachine().Update();
+						enemy.SetPacketTarget("SENDTOALL");
 						RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_UPDATEAIPOS, data: new Dictionary<byte, object>() { { (byte)245, enemy } }, cacheOp: 0);
 						//Wait so that the Random generator will seed differently
 						Thread.Sleep(10);

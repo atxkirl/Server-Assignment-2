@@ -83,7 +83,7 @@ namespace TestPlugin
 			{
 				using (var br = new BinaryReader(s))
 				{
-					customObject.SetTargetReceiverName(br.ReadString());
+					customObject.SetPacketTarget(br.ReadString());
 					customObject.SetObjectName(br.ReadString());
 					customObject.SetHealth(br.ReadInt32());
 					customObject.SetPos(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
@@ -106,7 +106,7 @@ namespace TestPlugin
 				using (var br = new BinaryReader(s))
 				{
 					//CustomObject Data
-					customObject.SetTargetReceiverName(br.ReadString());
+					customObject.SetPacketTarget(br.ReadString());
 					customObject.SetObjectName(br.ReadString());
 					customObject.SetHealth(br.ReadInt32());
 					customObject.SetPos(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
@@ -132,7 +132,7 @@ namespace TestPlugin
 				using (var br = new BinaryReader(s))
 				{
 					//CustomObject Data
-					customObject.SetTargetReceiverName(br.ReadString());
+					customObject.SetPacketTarget(br.ReadString());
 					customObject.SetObjectName(br.ReadString());
 					customObject.SetHealth(br.ReadInt32());
 					customObject.SetPos(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());

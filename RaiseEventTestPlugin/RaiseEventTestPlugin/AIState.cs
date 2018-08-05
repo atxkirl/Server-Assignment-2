@@ -73,10 +73,7 @@ namespace TestPlugin
 			//NOTE: Only do this if the state is supposed to change state overtime
 			waitTime = (float)NumberHelper.Instance.RandomSecondsBetweenRange(0, 1);
 
-			timer = new Stopwatch();
-			timer.Start();
-
-			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, GetControllingAI().GetObjectName() + " State " + this.GetName() + " Enter WaitTime=" + waitTime } }, cacheOp: 0);
+			timer.Restart();
 		}
 		public virtual void Exit()
 		{
@@ -115,7 +112,7 @@ namespace TestPlugin
 			base.Enter();
 
 			//Set the Idle waitTime to be between 2 and 5 seconds.
-			waitTime = (float)NumberHelper.Instance.RandomSecondsBetweenRange(2, 5);
+			waitTime = (float)NumberHelper.Instance.RandomSecondsBetweenRange(1, 3);
 		}
 
 		public override void Update()
@@ -161,12 +158,12 @@ namespace TestPlugin
 		public RoamState(string stateName)
 		{
 			base.SetName(stateName);
-			base.SetRange(30);
+			base.SetRange(1);
 		}
 		public RoamState(string stateName, AI _controllingAI)
 		{
 			base.name = stateName;
-			base.SetRange(30);
+			base.SetRange(1);
 			base.controllingAI = _controllingAI;
 		}
 
@@ -186,10 +183,6 @@ namespace TestPlugin
 			roamTarget.z = controllingAI.GetPosZ() + (float)NumberHelper.Instance.RandomNumberBetweenRange(0, 1);
 			if (NumberHelper.Instance.RandomBool())
 				roamTarget.z = -roamTarget.z;
-
-
-
-			RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, "Target position: " + roamTarget.x + "," + roamTarget.y + "," + roamTarget.z } }, cacheOp: 0);
 		}
 
 		public override void Update()
@@ -206,8 +199,6 @@ namespace TestPlugin
 					{
 						shortestDist = dist;
 						closestPlayer = player;
-
-						RaiseEventTestPlugin.Instance.PluginHost.BroadcastEvent(target: 0, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, "Closest Player: " + closestPlayer.GetObjectName() + " Distance: " + dist } }, cacheOp: 0);
 					}
 				}
 			}

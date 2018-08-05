@@ -36,7 +36,7 @@ namespace TestPlugin
 			{
 				using (var bw = new BinaryWriter(ms))
 				{
-					bw.Write(customObject.GetTargetReceiverName());
+					bw.Write(customObject.GetPacketTarget());
 					bw.Write(customObject.GetObjectName());
 					bw.Write(customObject.GetHealth());
 					bw.Write(customObject.GetPosX());

@@ -141,14 +141,34 @@ namespace TestPlugin
 			{
 				base.OnRaiseEvent(info);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				this.PluginHost.BroadcastErrorInfoEvent(e.ToString(), info);
+				this.PluginHost.BroadcastErrorInfoEvent(ex.ToString(), info);
 				return;
 			}
 
-			string packetData = Encoding.Default.GetString((byte[])info.Request.Data);
-			SenderName = PacketDecoder.Instance.GetStringFromString(packetData, "Name");
+			string stringData = "";
+			try
+			{
+				stringData = Encoding.Default.GetString((byte[])info.Request.Data);
+				SenderName = PacketDecoder.Instance.GetStringFromString(stringData, "Name");
+			}
+			catch(Exception ex)
+			{
+				//this.PluginHost.BroadcastErrorInfoEvent(ex.ToString(), info);
+				Console.WriteLine(ex.ToString());
+			}
+
+			CustomObject packetData = null;
+			try
+			{
+				packetData = (CustomObject)PacketDecoder.Instance.DecodeCustomObject((byte[])info.Request.Data);
+			}
+			catch (Exception ex)
+			{
+				//this.PluginHost.BroadcastErrorInfoEvent(ex.ToString(), info);
+				Console.WriteLine(ex.ToString());
+			}
 
 			///ASSIGNMENT 2 STUFF
 			///ASSIGNMENT 2 STUFF
@@ -156,35 +176,40 @@ namespace TestPlugin
 			//TEST PACKET
 			if (info.Request.EvCode == (byte)EVENT_CODES.TEST_PING)
 			{
-				SendListOfPlayers();
+				SendListOfPlayers(info);
 			}
 
 			//Client asking for all AIs
-			else if (info.Request.EvCode == (byte)EVENT_CODES.EV_INITAI)
+			if (info.Request.EvCode == (byte)EVENT_CODES.EV_INITAI)
 			{
-				//Make sure AIManager thread is fully initialized and running
-				do
+				if(packetData != null)
 				{
-					Thread.Sleep(100);
-				}
-				while (AIManager.Instance == null);
+					//Make sure AIManager thread is fully initialized and running
+					do
+					{
+						Thread.Sleep(100);
+					}
+					while (AIManager.Instance == null);
 
-				foreach (AI enemy in AIManager.Instance.GetAIList())
-				{
-					this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_SPAWNAI, data: new Dictionary<byte, object>() { { (byte)245, enemy } }, cacheOp: 0);
+					//Iterate and send AI to the requesting client
+					foreach (AI enemy in AIManager.Instance.GetAIList())
+					{
+						//Set packetTarget to be the requesting client name so ONLY the requesting client will open
+						//This is to prevent duplicate AI from spawning on other clients when a new client joins the server
+						enemy.SetPacketTarget(packetData.GetPacketTarget());
+						this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_SPAWNAI, data: new Dictionary<byte, object>() { { (byte)245, enemy } }, cacheOp: 0);
+					}
 				}
 			}
 
 			//Client updating position within server
 			else if (info.Request.EvCode == (byte)EVENT_CODES.EV_UPDATEPLAYERPOS)
 			{
-				Player player = (Player)PacketDecoder.Instance.DecodePlayer((byte[])info.Request.Data);
-				this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.TEST_STRINGPACKET, data: new Dictionary<byte, object>() { { (byte)245, "Received UpdatePlayerPos from: " + player.GetObjectName() } }, cacheOp: 0);
 				foreach (Player connectedPlayer in ConnectedPlayers)
 				{
-					if(connectedPlayer.GetObjectName() == player.GetObjectName())
+					if (connectedPlayer.GetObjectName() == packetData.GetObjectName())
 					{
-						connectedPlayer.SetPos(player.GetPos());
+						connectedPlayer.SetPos(packetData.GetPos());
 						return;
 					}
 				}
@@ -192,7 +217,7 @@ namespace TestPlugin
 
 			//Client asking for List of all connected clients
 			else if (info.Request.EvCode == (byte)EVENT_CODES.EV_LISTALLUSERS)
-				SendListOfPlayers();
+				SendListOfPlayers(info);
 
 			//User joining server
 			else if (info.Request.EvCode == (byte)EVENT_CODES.EV_USERJOINING)
@@ -233,13 +258,27 @@ namespace TestPlugin
 		}
 
 		//Sends out all the Players that are connected
-		public void SendListOfPlayers()
+		public void SendListOfPlayers(IRaiseEventCallInfo info)
 		{
 			if(ConnectedPlayers.Count > 0)
 			{
-				foreach (Player player in ConnectedPlayers)
+				Player requestingClient = null;
+				try
 				{
-					this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LISTALLUSERS, data: new Dictionary<byte, object>() { { (byte)245, player } }, cacheOp: 0);
+					requestingClient = (Player)PacketDecoder.Instance.DecodePlayer((byte[])info.Request.Data);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex.ToString());
+				}
+
+				if(requestingClient != null)
+				{
+					foreach (Player player in ConnectedPlayers)
+					{
+						player.SetPacketTarget(requestingClient.GetPacketTarget());
+						this.PluginHost.BroadcastEvent(target: ReciverGroup.All, senderActor: 0, targetGroup: 0, evCode: (byte)EVENT_CODES.EV_LISTALLUSERS, data: new Dictionary<byte, object>() { { (byte)245, player } }, cacheOp: 0);
+					}
 				}
 			}
 		}

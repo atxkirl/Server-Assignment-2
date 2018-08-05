@@ -11,7 +11,7 @@ namespace TestPlugin
 	/// </summary>
 	public class CustomObject
 	{
-		protected string targetReceiverName;
+		protected string packetTarget;
 		protected string objectName;
 		protected int health;
 		protected Vector3 pos;
@@ -20,7 +20,7 @@ namespace TestPlugin
 		//CONSTRUCTORS
 		public CustomObject(string _targetReceiverName, string _objectName, int _health, Vector3 _pos, Quaternion _rot)
 		{
-			targetReceiverName = _targetReceiverName;
+			packetTarget = _targetReceiverName;
 			objectName = _objectName;
 			health = _health;
 			pos = _pos;
@@ -28,12 +28,15 @@ namespace TestPlugin
 		}
 		public CustomObject(Vector3 _pos, Quaternion _rot)
 		{
+			packetTarget = "SENDTOALL";
+			objectName = "DEFAULT";
+			health = 1;
 			pos = _pos;
 			rot = _rot;
 		}
 		public CustomObject()
 		{
-			targetReceiverName = "DEFAULT";
+			packetTarget = "SENDTOALL";
 			objectName = "DEFAULT";
 			health = 1;
 			pos = new Vector3();
@@ -41,7 +44,7 @@ namespace TestPlugin
 		}
 
 		//GETTERS
-		public string GetTargetReceiverName() { return targetReceiverName; }
+		public string GetPacketTarget() { return packetTarget; }
 		public string GetObjectName() { return objectName; }
 		public int GetHealth() { return health; }
 		public Vector3 GetPos() { return pos; }
@@ -55,7 +58,7 @@ namespace TestPlugin
 		public float GetRotW() { return rot.w; }
 
 		//SETTERS
-		public void SetTargetReceiverName(string _targetReceiverName) { targetReceiverName = _targetReceiverName; }
+		public void SetPacketTarget(string _packetTarget) { packetTarget = _packetTarget; }
 		public void SetObjectName(string _objectName) { objectName = _objectName; }
 		public void SetHealth(int _health) { health = _health; }
 		public void SetPos(Vector3 _pos) { pos = _pos; }
